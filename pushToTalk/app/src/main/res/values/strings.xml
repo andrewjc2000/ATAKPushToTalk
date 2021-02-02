@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">ATAK Push To Talk</string>
+    <!-- description -->
+    <string name="app_desc">This plugin consists of the capability to record audio, transcribe that audio to speech, and then edit and send the transcription to an SMS chat.</string>
+
+</resources>
