@@ -1,0 +1,16 @@
+-keep class com.atakmap.android.helloworld.CameraActivity { <init>(); }
+-keep class com.atakmap.android.helloworld.notification.NotificationService { <init>(); }
+-keep class com.atakmap.android.helloworld.speechtotext.SpeechToActivity { <init>(); }
+-keep class com.javacodegeeks.android.contentprovidertest.BirthProvider { <init>(); }
+-keep class androidx.viewpager.widget.ViewPager { <init>(android.content.Context, android.util.AttributeSet); }
+
+-keep class com.atakmap.android.gui.EncryptedPanEditTextPreference { <init>(...); }
+
+-keep class com.atakmap.android.gui.PanEditTextPreference { <init>(...); }
+
+-keep class com.atakmap.android.gui.PanPreference { <init>(...); }
+
+-keep class com.atakmap.android.gui.PluginSpinner { <init>(android.content.Context, android.util.AttributeSet); }
+
+-keep class com.atakmap.android.helloworld.recyclerview.RecyclerView { <init>(android.content.Context, android.util.AttributeSet); }
+

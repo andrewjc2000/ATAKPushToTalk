@@ -1,0 +1,53 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.atakmap.android.plugintemplate.plugin"
+4    android:versionCode="1"
+5    android:versionName="1.0 (1) - [4.2.0]" >
+6
+7    <uses-sdk android:minSdkVersion="21" />
+7-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml
+8
+9    <application
+9-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:6:5-23:19
+10        android:allowBackup="false"
+10-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:7:9-36
+11        android:debuggable="true"
+12        android:description="@string/app_desc"
+12-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:10:9-47
+13        android:extractNativeLibs="true"
+13-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:11:9-41
+14        android:icon="@drawable/ic_launcher"
+14-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:8:9-45
+15        android:label="@string/app_name"
+15-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:9:9-41
+16        android:theme="@style/AppTheme" >
+16-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:12:9-40
+17        <activity android:name="com.atakmap.android.plugintemplate.ptt.StartStopDemo" >
+17-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:13:9-18:20
+17-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:13:19-86
+18            <intent-filter>
+18-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:14:13-17:29
+19                <action android:name="android.intent.action.MAIN" />
+19-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:15:17-69
+19-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:15:25-66
+20
+21                <category android:name="android.intent.category.LAUNCHER" />
+21-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:16:17-77
+21-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:16:27-74
+22            </intent-filter>
+23        </activity>
+24
+25        <meta-data
+26            android:name="plugin-api"
+26-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:19:20-45
+27            android:value="com.atakmap.app@4.2.0.CIV" />
+27-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:19:46-79
+28        <meta-data
+28-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:20:9-78
+29            android:name="app_desc"
+29-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:20:20-43
+30            android:value="@string/app_desc" />
+30-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\plugintemplate\app\src\main\AndroidManifest.xml:20:44-76
+31    </application>
+32
+33</manifest>

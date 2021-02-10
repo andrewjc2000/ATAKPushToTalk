@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "applicationId": "com.atakmap.android.plugintemplate.plugin",
+  "variantType": "BASE_APK",
+  "elements": [
+    {
+      "outputType": {
+        "type": "PROCESSED_RES"
+      },
+      "apkData": {
+        "type": "MAIN",
+        "splits": [],
+        "versionCode": 1,
+        "versionName": "1.0 (1) - [4.2.0]",
+        "outputFile": "ATAK-Plugin-plugintemplate-1.0-1-4.2.0-civ-debug.apk",
+        "fullName": "civDebug",
+        "baseName": "civ-debug",
+        "dirName": ""
+      },
+      "path": "resources-civDebug.ap_",
+      "properties": {
+        "packageId": "com.atakmap.android.plugintemplate.plugin",
+        "split": "",
+        "minSdkVersion": "21"
+      }
+    }
+  ]
+}

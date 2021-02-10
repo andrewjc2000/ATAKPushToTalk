@@ -1,0 +1,106 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.atakmap.android.helloworld.plugin"
+4    android:versionCode="1"
+5    android:versionName="1.0 (1) - [4.2.0]" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+8-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="28" />
+9-->[androidx.recyclerview:recyclerview:1.1.0] C:\Users\Roye_PC\.gradle\caches\transforms-2\files-2.1\4e891082990df48be1bf2b9ebb351bd8\recyclerview-1.1.0\AndroidManifest.xml:22:9-38
+10
+11    <application
+11-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:4:5-58:19
+12        android:allowBackup="false"
+12-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:5:9-36
+13        android:debuggable="true"
+14        android:description="@string/app_desc"
+14-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:8:9-47
+15        android:icon="@drawable/ic_launcher"
+15-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:6:9-45
+16        android:label="@string/app_name"
+16-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:7:9-41
+17        android:theme="@style/AppTheme" >
+17-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:9:9-40
+18        <meta-data
+19            android:name="plugin-api"
+19-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:10:20-45
+20            android:value="com.atakmap.app@4.2.0.CIV" />
+20-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:10:46-79
+21        <meta-data
+21-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:11:9-78
+22            android:name="app_desc"
+22-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:11:20-43
+23            android:value="@string/app_desc" />
+23-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:11:44-76
+24
+25        <provider
+25-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:15:9-17:20
+26            android:name="com.javacodegeeks.android.contentprovidertest.BirthProvider"
+26-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:15:19-93
+27            android:authorities="com.javacodegeeks.provider.Birthday" >
+27-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:16:13-70
+28        </provider>
+29
+30        <service
+30-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:19:9-26:19
+31            android:name="com.atakmap.android.helloworld.notification.NotificationService"
+31-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:20:13-91
+32            android:label="Plugin Notification Service" >
+32-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:21:13-56
+33            <intent-filter>
+33-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:23:13-25:29
+34                <action android:name="com.atakmap.android.helloworld.notification.NotificationService" />
+34-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:24:17-105
+34-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:24:25-103
+35            </intent-filter>
+36        </service>
+37
+38        <activity
+38-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:28:9-33:20
+39            android:name="com.atakmap.android.helloworld.CameraActivity"
+39-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:29:13-73
+40            android:configChanges="orientation"
+40-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:32:13-48
+41            android:exported="true"
+41-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:31:13-36
+42            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+42-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:30:13-83
+43        </activity>
+44
+45        <!--
+46        Commented out, functionality absorbed by SpeechToActivity
+47        <activity
+48            android:name="com.atakmap.android.helloworld.SpeechToTextActivity"
+49            android:theme="@style/AppTheme"
+50            android:exported="true"
+51            android:configChanges="orientation"
+52            android:launchMode="singleTop">
+53            <intent-filter>
+54                <action android:name="com.atakmap.android.helloworld.SpeechToTextActivity"/>
+55            </intent-filter>
+56        </activity>
+57        -->
+58        <activity
+58-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:47:9-56:20
+59            android:name="com.atakmap.android.helloworld.speechtotext.SpeechToActivity"
+59-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:48:13-88
+60            android:configChanges="orientation"
+60-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:51:13-48
+61            android:exported="true"
+61-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:50:13-36
+62            android:launchMode="singleTop"
+62-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:52:13-43
+63            android:theme="@style/Theme.Transparent" >
+63-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:49:13-53
+64            <intent-filter>
+64-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:53:13-55:29
+65                <action android:name="com.atakmap.android.helloworld.SpeechToActivity" />
+65-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:54:17-89
+65-->C:\Users\Roye_PC\AndroidStudioProjects\ATAK-CIVX\atak-civ\plugin-examples\helloworld\app\src\main\AndroidManifest.xml:54:25-87
+66            </intent-filter>
+67        </activity>
+68    </application>
+69
+70</manifest>

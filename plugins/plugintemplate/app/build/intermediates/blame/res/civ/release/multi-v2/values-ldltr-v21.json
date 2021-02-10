@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\Roye_PC\\AndroidStudioProjects\\ATAK-CIVX\\atak-civ\\plugin-examples\\plugintemplate\\app\\build\\intermediates\\incremental\\mergeCivReleaseResources\\merged.dir\\values-ldltr-v21\\values-ldltr-v21.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Roye_PC\\.gradle\\caches\\transforms-2\\files-2.1\\c442f5c3a2c6882d2cffebb9a73eaaa8\\appcompat-1.2.0\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "112",
+                        "endOffsets": "163"
+                    }
+                }
+            ]
+        }
+    ]
+}
