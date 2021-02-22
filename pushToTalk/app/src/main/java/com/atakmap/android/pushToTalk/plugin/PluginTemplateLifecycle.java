@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import com.atakmap.android.maps.MapComponent;
 import com.atakmap.android.maps.MapView;
-import com.atakmap.android.pushToTalk.PluginTemplateMapComponent;
+import com.atakmap.android.pushToTalk.PushToTalkMapComponent;
 
 import transapps.maps.plugin.lifecycle.Lifecycle;
 import android.app.Activity;
@@ -45,7 +45,7 @@ public class PluginTemplateLifecycle implements Lifecycle {
         }
         this.mapView = (MapView) arg1.getView();
         PluginTemplateLifecycle.this.overlays
-                .add(new PluginTemplateMapComponent());
+                .add(new PushToTalkMapComponent());
 
         // create components
         Iterator<MapComponent> iter = PluginTemplateLifecycle.this.overlays

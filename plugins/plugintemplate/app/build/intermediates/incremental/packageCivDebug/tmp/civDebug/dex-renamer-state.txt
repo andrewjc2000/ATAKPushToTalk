@@ -1,4 +1,0 @@
-#Thu Feb 04 08:39:19 EST 2021
-base.0=C\:\\Users\\Roye_PC\\AndroidStudioProjects\\ATAK-CIVX\\atak-civ\\plugin-examples\\plugintemplate\\app\\build\\intermediates\\dex\\civDebug\\mergeProjectDexCivDebug\\classes.dex
-path.0=classes.dex
-renamed.0=classes.dex

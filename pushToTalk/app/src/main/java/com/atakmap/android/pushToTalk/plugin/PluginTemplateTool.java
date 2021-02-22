@@ -3,7 +3,7 @@ package com.atakmap.android.pushToTalk.plugin;
 
 import com.atakmap.android.ipc.AtakBroadcast;
 import com.atakmap.android.plugintemplate.plugin.R;
-import com.atakmap.android.pushToTalk.PluginTemplateDropDownReceiver;
+import com.atakmap.android.pushToTalk.PushToTalkDropDownReceiver;
 
 import android.app.Activity;
 import android.content.Context;
@@ -66,7 +66,7 @@ public class PluginTemplateTool extends Tool implements ToolDescriptor {
 
         //arg2.setVisibility(ViewGroup.INVISIBLE);
         Intent i = new Intent(
-                PluginTemplateDropDownReceiver.SHOW_PLUGIN);
+                PushToTalkDropDownReceiver.SHOW_PLUGIN);
         AtakBroadcast.getInstance().sendBroadcast(i);
     }
 
