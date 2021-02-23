@@ -1,0 +1,6 @@
+local.properties
+.gradle/
+.idea/
+pushToTalk/app/build
+pushToTalk/.idea/
+pushToTalk/.takdev
