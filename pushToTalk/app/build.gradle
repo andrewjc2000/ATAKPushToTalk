@@ -51,6 +51,7 @@ buildscript {
         maven {
             url "https://jitpack.io"
         }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven {
             url = takrepoUrl
             credentials {
@@ -65,7 +66,8 @@ buildscript {
             classpath "com.atakmap.gradle:atak-gradle-takdev:${takdevVersion}"
         } else {
             classpath files(takdevPlugin)
-    }
+        }
+
  }
 }
 
@@ -78,6 +80,7 @@ allprojects {
         maven {
             url "https://jitpack.io"
         }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }
 
@@ -154,7 +157,7 @@ android {
             if (kf == null) {
                  throw new GradleException("No signing key configured!")
             }
- 
+
             storeFile file(kf)
             if (kfp != null) storePassword kfp
             if (ka != null) keyAlias ka
@@ -280,5 +283,5 @@ android {
 dependencies {
     implementation fileTree(dir: "${rootDir}/../libs", include: '*.jar')
     testImplementation 'junit:junit:4.13'
+    implementation 'edu.cmu.sphinx:sphinx4-core:5prealpha-SNAPSHOT'
 }
-
