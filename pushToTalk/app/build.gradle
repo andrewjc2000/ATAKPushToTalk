@@ -284,4 +284,16 @@ dependencies {
     implementation fileTree(dir: "${rootDir}/../libs", include: '*.jar')
     testImplementation 'junit:junit:4.13'
     implementation 'edu.cmu.sphinx:sphinx4-core:5prealpha-SNAPSHOT'
+
+    // implementation ('androidx.appcompat:appcompat:1.0.0') {
+    //     exclude group: "androidx.core"
+    //     exclude group: "androidx.annotation"
+    //     exclude group: "androidx.arch"
+    //     exclude group: "androidx.collection"
+    //     exclude group: "androidx.customview"
+    //     exclude group: "androidx.fragment"
+    //     exclude group: "androidx.lifecycle"
+    //     exclude group: "androidx.loader"
+    //     exclude group: "androidx.viewpager"
+    // }
 }

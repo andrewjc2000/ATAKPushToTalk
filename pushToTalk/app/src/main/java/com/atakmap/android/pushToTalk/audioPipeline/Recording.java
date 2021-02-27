@@ -15,9 +15,14 @@ public interface Recording {
     public boolean hasAudio();
 
     /**
-     * Records Audio
+     * Starts recording audio
      **/
-    public void recordAudio();
+    public void startRecording();
+
+    /**
+     * Stops recording audio
+     **/
+    public void stopRecording();
 
     /**
      * Returns a wav file with the saved audio
