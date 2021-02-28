@@ -1,5 +1,6 @@
 package com.atakmap.android.pushToTalk.audioPipeline;
 
+import android.util.Log;
 import java.io.File;
 import java.util.concurrent.LinkedBlockingQueue;
 import android.content.Context;
@@ -44,7 +45,9 @@ public class MicrophoneRecording implements Recording {
                                                    data.length);
                 header.write(writeStream);
                 writeStream.write(data);
-                System.out.println("Wav file written sucessfully");
+                dataStream = new ByteArrayInputStream(((ByteArrayOutputStream)writeStream).toByteArray());
+                String tag = "WriteThread";
+                Log.i(tag, "wav stream made succesfully");
                 fileReady.set(true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -58,15 +61,16 @@ public class MicrophoneRecording implements Recording {
      **/
     private class RecordingThread extends Thread {
 
-        private void record() {
+        private void record(ByteArrayOutputStream output) {
             //Extra 20 is for additional comfort room
-            ByteBuffer buffer = ByteBuffer.allocateDirect(minBufferSize + 20);
-            int code = recorder.read(buffer,  minBufferSize);
+            ByteBuffer buffer = ByteBuffer.allocateDirect(2048);
+            int code = recorder.read(buffer, 2048);
             if (code < 0) {
                 throw new Error("Error recording the audio");
             }
             try {
-                writeQueue.put(buffer);
+                //writeQueue.put(buffer);
+                output.write(buffer.array());
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new Error("There was a problem");
@@ -75,19 +79,41 @@ public class MicrophoneRecording implements Recording {
 
         @Override
         public void run() {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            recorder.startRecording();
             while (isRecording.get()) {
                 //Do recording logic here
-                record();
+                record(output);
             }
+            recorder.stop();
             //Recording is now finished
             //Set ready to true
-            ready.set(true);
+            try {
+                byte[] data = output.toByteArray();
+                InputStream raw = new ByteArrayInputStream(data);
+                WaveHeader header = new WaveHeader(WaveHeader.FORMAT_PCM,
+                                                   (short)1,
+                                                   SAMPLE_RATE,
+                                                   (short)16,
+                                                   data.length);
+                header.write(writeStream);
+                writeStream.write(data);
+                dataStream = new ByteArrayInputStream(((ByteArrayOutputStream)writeStream).toByteArray());
+                String tag = "WriteThread";
+                Log.i(tag, "wav stream made succesfully");
+                fileReady.set(true);
+                ready.set(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new Error("Broken!");
+            }
         }
 
     }
 
-    private File recording;
-    private FileOutputStream writeStream;
+    //private File recording;
+    private OutputStream writeStream;
+    private InputStream dataStream;
     private AtomicBoolean ready;
     private AtomicBoolean fileReady;
     private Context context;
@@ -110,16 +136,20 @@ public class MicrophoneRecording implements Recording {
         this.fileReady = new AtomicBoolean(false);
         this.isRecording = new AtomicBoolean(false);
         FILE_NAME = "audio_transcription_" + count + ".wav";
-        this.recording = new File(context.getFilesDir(), FILE_NAME);
         count++;
         configureRecording();
-
-        try {
-            writeStream = new FileOutputStream(recording);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Error("Bad file system");
-        }
+        writeStream = new ByteArrayOutputStream();
+        // try {
+        //     String tag = "FileIssues";
+        //     boolean result = context.getFilesDir().mkdirs();
+        //     Log.i(tag, "" + result);
+        //     //this.recording = new File(context.getFilesDir(), FILE_NAME);
+        //     //recording.createNewFile();
+        //     writeStream = new FileOutputStream(recording);
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     throw new Error("Bad file system");
+        // }
     }
 
     private void configureRecording() {
@@ -143,7 +173,7 @@ public class MicrophoneRecording implements Recording {
     public void startRecording() {
         isRecording.set(true);
         (new RecordingThread()).start();
-        (new WriteThread()).start();
+        //        (new WriteThread()).start();
     }
 
     @Override
@@ -159,6 +189,10 @@ public class MicrophoneRecording implements Recording {
 
     @Override
     public File getAudio() {
-        return recording;
+        return null;
+    }
+
+    public InputStream getDataStream() {
+        return dataStream;
     }
 }
