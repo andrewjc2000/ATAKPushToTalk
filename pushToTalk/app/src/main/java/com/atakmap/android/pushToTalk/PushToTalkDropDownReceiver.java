@@ -4,8 +4,7 @@ package com.atakmap.android.pushToTalk;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.Toast;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.io.File;
@@ -13,7 +12,6 @@ import java.io.InputStream;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
-import com.atakmap.android.plugintemplate.plugin.R;
 import com.atakmap.android.dropdown.DropDown.OnStateListener;
 import com.atakmap.android.dropdown.DropDownReceiver;
 
@@ -22,47 +20,65 @@ import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
 
 import com.atakmap.coremap.log.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 public class PushToTalkDropDownReceiver extends DropDownReceiver implements
         OnStateListener {
 
     public static final String TAG = PushToTalkDropDownReceiver.class.getSimpleName();
 
     public static final String SHOW_PLUGIN = "com.atakmap.android.pushToTalk.SHOW_PLUGIN";
+
     private final View pushToTalkView;
     private final Context pluginContext;
     private boolean recording;
     private MicrophoneRecording mic;
 
+    private View pushToTalkView;
+    private Context pluginContext;
+
+
     public PushToTalkDropDownReceiver(final MapView mapView,
                                       final Context context) {
         super(mapView);
-        this.pluginContext = context;
-        pushToTalkView = PluginLayoutInflater.inflate(context, R.layout.main_layout, null);
-        this.recording = false;
-        View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (v.getId() == R.id.imageView) {
-                    toast((recording ? "Stops" : "Starts") + " the recording of the ATAK PTT System");
+        try {
+            this.pluginContext = context;
+            pushToTalkView = PluginLayoutInflater.inflate(context, R.layout.navigation, null);
+            TabHost tabHost = pushToTalkView.findViewById(R.id.tabHost);
+            tabHost.setup();
+            final View recordingView = new RecordingView(getMapView(), context).getRecordingView();
+            final View settingsView = new SettingsView(getMapView(), context).getSettingsView();
+            TabHost.TabSpec recordingSpec = tabHost.newTabSpec("recording").setIndicator("Record Audio");
+            recordingSpec.setContent(
+                new TabHost.TabContentFactory() {
+                    @Override
+                    public View createTabContent(String s) {
+                        return recordingView;
+                    }
                 }
-                return true;
-            }
-        };
-
-        final ImageView toggleRecordingButton = pushToTalkView.findViewById(R.id.imageView);
-        toggleRecordingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String result = toggleRecording(context);
-                toast(result);
-                toast("Recording has " + (recording ? " Started" : " Stopped"));
-            }
-        });
-        toggleRecordingButton.setOnLongClickListener(longClickListener);
+            );
+            TabHost.TabSpec settingsSpec = tabHost.newTabSpec("settings").setIndicator("Settings");
+            settingsSpec.setContent(
+                new TabHost.TabContentFactory() {
+                    @Override
+                    public View createTabContent(String s) {
+                        return settingsView;
+                    }
+                }
+            );
+            tabHost.addTab(recordingSpec);
+            tabHost.addTab(settingsSpec);
+        } catch (Throwable t) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream stream = new PrintStream(baos);
+            t.printStackTrace(stream);
+            toast(baos.toString());
+        }
     }
 
     private void toast(String str) {
-        Toast.makeText(getMapView().getContext(), str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getMapView().getContext(), str, Toast.LENGTH_LONG).show();
     }
 
     /**************************** PUBLIC METHODS *****************************/
