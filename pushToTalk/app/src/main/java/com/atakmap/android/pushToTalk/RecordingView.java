@@ -71,16 +71,15 @@ public class RecordingView {
     }
 
     public String getTranscription() {
-        return "Some actual string here";
+        InputStream recData = mic.getDataStream();
+        Transcriber scribe = new Transcriber(recData, new LinkedBlockingQueue<String>());
+        return scribe.transcribe(recData);
     }
 
     public void processRecording() {
         mic.stopRecording();
-        InputStream recData = mic.getDataStream();
-        Transcriber scribe = new Transcriber(recData, new LinkedBlockingQueue<String>());
         //TODO: Might need to spin off another thread for this
-        String result = scribe.transcribe(recData);
-
+        String result = getTranscription();
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);
         if (showConfirmationPrompt) {
             showConfirmationPrompt(result);

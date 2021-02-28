@@ -12,9 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.FileOutputStream;
-import edu.cmu.sphinx.frontend.util.StreamDataSource;
-import edu.cmu.sphinx.frontend.util.WavWriter;
 
 public class MicrophoneRecording implements Recording {
 
@@ -22,6 +19,32 @@ public class MicrophoneRecording implements Recording {
      * Holds the buffers waiting to be written to file
      **/
     private LinkedBlockingQueue<ByteBuffer> writeQueue = new LinkedBlockingQueue<>();
+    //private File recording;
+    private OutputStream writeStream;
+    private InputStream dataStream;
+    private AtomicBoolean ready;
+    private AtomicBoolean fileReady;
+    private Context context;
+    private AtomicBoolean isRecording;
+    private int minBufferSize;
+    private AudioRecord recorder;
+
+    private static int count = 0;
+    private static final int SAMPLE_RATE = 16000;
+    private static final int ENCODING = AudioFormat.ENCODING_PCM_16BIT;
+    private static final int CHANNEL = AudioFormat.CHANNEL_IN_MONO;
+    private static final int BUFFER_FUDGE = 0; //Increase size of buffer
+    //for better performance
+
+    public MicrophoneRecording(Context context) {
+        this.context = context;
+        this.ready = new AtomicBoolean(false);
+        this.fileReady = new AtomicBoolean(false);
+        this.isRecording = new AtomicBoolean(false);
+        count++;
+        configureRecording();
+        writeStream = new ByteArrayOutputStream();
+    }
 
     /**
      * Writes data to file
@@ -37,12 +60,7 @@ public class MicrophoneRecording implements Recording {
                     output.write(data.array());
                 }
                 byte[] data = output.toByteArray();
-                InputStream raw = new ByteArrayInputStream(data);
-                WaveHeader header = new WaveHeader(WaveHeader.FORMAT_PCM,
-                                                   (short)1,
-                                                   SAMPLE_RATE,
-                                                   (short)16,
-                                                   data.length);
+                WaveHeader header = new WaveHeader((short)1, SAMPLE_RATE, (short)16, data.length);
                 header.write(writeStream);
                 writeStream.write(data);
                 dataStream = new ByteArrayInputStream(((ByteArrayOutputStream)writeStream).toByteArray());
@@ -90,12 +108,7 @@ public class MicrophoneRecording implements Recording {
             //Set ready to true
             try {
                 byte[] data = output.toByteArray();
-                InputStream raw = new ByteArrayInputStream(data);
-                WaveHeader header = new WaveHeader(WaveHeader.FORMAT_PCM,
-                                                   (short)1,
-                                                   SAMPLE_RATE,
-                                                   (short)16,
-                                                   data.length);
+                WaveHeader header = new WaveHeader((short)1, SAMPLE_RATE, (short)16, data.length);
                 header.write(writeStream);
                 writeStream.write(data);
                 dataStream = new ByteArrayInputStream(((ByteArrayOutputStream)writeStream).toByteArray());
@@ -108,48 +121,6 @@ public class MicrophoneRecording implements Recording {
                 throw new Error("Broken!");
             }
         }
-
-    }
-
-    //private File recording;
-    private OutputStream writeStream;
-    private InputStream dataStream;
-    private AtomicBoolean ready;
-    private AtomicBoolean fileReady;
-    private Context context;
-    private AtomicBoolean isRecording;
-    private int minBufferSize;
-    private AudioRecord recorder;
-
-    private final String FILE_NAME;
-    private static int count = 0;
-    private static final int SAMPLE_RATE = 16000;
-    private static final int ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-    private static final int CHANNEL = AudioFormat.CHANNEL_IN_MONO;
-    private static final int BUFFER_FUDGE = 0; //Increase size of buffer
-                                               //for better preformance
-
-
-    public MicrophoneRecording(Context context) {
-        this.context = context;
-        this.ready = new AtomicBoolean(false);
-        this.fileReady = new AtomicBoolean(false);
-        this.isRecording = new AtomicBoolean(false);
-        FILE_NAME = "audio_transcription_" + count + ".wav";
-        count++;
-        configureRecording();
-        writeStream = new ByteArrayOutputStream();
-        // try {
-        //     String tag = "FileIssues";
-        //     boolean result = context.getFilesDir().mkdirs();
-        //     Log.i(tag, "" + result);
-        //     //this.recording = new File(context.getFilesDir(), FILE_NAME);
-        //     //recording.createNewFile();
-        //     writeStream = new FileOutputStream(recording);
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        //     throw new Error("Bad file system");
-        // }
     }
 
     private void configureRecording() {
@@ -173,7 +144,6 @@ public class MicrophoneRecording implements Recording {
     public void startRecording() {
         isRecording.set(true);
         (new RecordingThread()).start();
-        //        (new WriteThread()).start();
     }
 
     @Override

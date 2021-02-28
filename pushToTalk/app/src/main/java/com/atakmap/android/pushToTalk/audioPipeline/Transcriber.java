@@ -2,7 +2,6 @@ package com.atakmap.android.pushToTalk.audioPipeline;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 import java.util.concurrent.LinkedBlockingQueue;
