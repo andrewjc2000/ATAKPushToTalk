@@ -1,6 +1,7 @@
 package com.atakmap.android.pushToTalk;
 
 import java.io.InputStream;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,7 +13,7 @@ import android.widget.Toast;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
-import com.atakmap.android.pushToTalk.audioPipeline.MircophoneRecording;
+import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
 import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
 
 public class RecordingView {
@@ -22,12 +23,12 @@ public class RecordingView {
     private MapView mapView;
     private Context context;
 
-    private MircophoneRecording mic;
+    private MicrophoneRecording mic;
 
     public RecordingView(MapView mapView, final Context context) {
         this.context = context;
         this.mapView = mapView;
-        mic = new MircophoneRecording(context);
+        mic = new MicrophoneRecording(context);
 
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
@@ -76,8 +77,9 @@ public class RecordingView {
     public void processRecording() {
         mic.stopRecording();
         InputStream recData = mic.getDataStream();
+        Transcriber scribe = new Transcriber(recData, new LinkedBlockingQueue<String>());
         //TODO: Might need to spin off another thread for this
-        String result = mic.transcribe();
+        String result = scribe.transcribe(recData);
 
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);
         if (showConfirmationPrompt) {
