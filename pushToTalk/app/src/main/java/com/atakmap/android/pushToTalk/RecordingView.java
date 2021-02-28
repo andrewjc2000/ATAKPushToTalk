@@ -82,7 +82,7 @@ public class RecordingView {
 
         new AlertDialog.Builder(mapView.getContext())
             .setView(input)
-            .setTitle("Processing Audio Transcription...")
+            .setTitle("Edit Transcription Before Sending")
             .setPositiveButton("Send Message",
                 new DialogInterface.OnClickListener() {
                     @Override
