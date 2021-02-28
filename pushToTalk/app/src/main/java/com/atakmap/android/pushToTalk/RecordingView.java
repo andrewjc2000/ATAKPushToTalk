@@ -1,5 +1,7 @@
 package com.atakmap.android.pushToTalk;
 
+import java.io.InputStream;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +12,8 @@ import android.widget.Toast;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
+import com.atakmap.android.pushToTalk.audioPipeline.MircophoneRecording;
+import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
 
 public class RecordingView {
     private static boolean recording = false;
@@ -18,9 +22,13 @@ public class RecordingView {
     private MapView mapView;
     private Context context;
 
+    private MircophoneRecording mic;
+
     public RecordingView(MapView mapView, final Context context) {
         this.context = context;
         this.mapView = mapView;
+        mic = new MircophoneRecording(context);
+
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
             @Override
@@ -54,7 +62,7 @@ public class RecordingView {
                 toast("Processing Audio...");
                 processRecording();
             } else {
-                // todo call code to start recording into some buffer
+                mic.startRecording();
             }
         } else {
             toast("Cannot start or stop a recording while one is currently being processed");
@@ -66,8 +74,11 @@ public class RecordingView {
     }
 
     public void processRecording() {
-        // todo kick off real processing here
-        String result = getTranscription();
+        mic.stopRecording();
+        InputStream recData = mic.getDataStream();
+        //TODO: Might need to spin off another thread for this
+        String result = mic.transcribe();
+
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);
         if (showConfirmationPrompt) {
             showConfirmationPrompt(result);
