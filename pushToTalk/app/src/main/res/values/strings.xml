@@ -6,5 +6,6 @@
     <string name="app_desc">This plugin consists of the capability to record audio, transcribe that audio to speech, and then edit and send the transcription to an SMS chat.</string>
 
     <string name="button_desc">Button to Start and Stop Speech to Text Transcription</string>
+    <string name="promptConfirmText">Confirm Transcription is Correct Before Sending</string>
 
 </resources>

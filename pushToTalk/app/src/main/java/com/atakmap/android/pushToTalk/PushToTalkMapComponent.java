@@ -9,7 +9,6 @@ import com.atakmap.android.maps.MapView;
 import com.atakmap.android.dropdown.DropDownMapComponent;
 
 import com.atakmap.coremap.log.Log;
-import com.atakmap.android.plugintemplate.plugin.R;
 
 public class PushToTalkMapComponent extends DropDownMapComponent {
 

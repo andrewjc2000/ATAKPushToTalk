@@ -2,8 +2,8 @@
 package com.atakmap.android.pushToTalk.plugin;
 
 import com.atakmap.android.ipc.AtakBroadcast;
-import com.atakmap.android.plugintemplate.plugin.R;
 import com.atakmap.android.pushToTalk.PushToTalkDropDownReceiver;
+import com.atakmap.android.pushToTalk.R;
 
 import android.app.Activity;
 import android.content.Context;
