@@ -6,11 +6,17 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.Toast;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.io.File;
+import java.io.InputStream;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.dropdown.DropDown.OnStateListener;
 import com.atakmap.android.dropdown.DropDownReceiver;
+
+import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
+import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
 
 import com.atakmap.coremap.log.Log;
 
@@ -23,8 +29,15 @@ public class PushToTalkDropDownReceiver extends DropDownReceiver implements
     public static final String TAG = PushToTalkDropDownReceiver.class.getSimpleName();
 
     public static final String SHOW_PLUGIN = "com.atakmap.android.pushToTalk.SHOW_PLUGIN";
+
+    private final View pushToTalkView;
+    private final Context pluginContext;
+    private boolean recording;
+    private MicrophoneRecording mic;
+
     private View pushToTalkView;
     private Context pluginContext;
+
 
     public PushToTalkDropDownReceiver(final MapView mapView,
                                       final Context context) {
@@ -69,6 +82,23 @@ public class PushToTalkDropDownReceiver extends DropDownReceiver implements
     }
 
     /**************************** PUBLIC METHODS *****************************/
+
+    public String toggleRecording(Context con) {
+        this.recording = !recording;
+        if (recording) {
+            mic = new MicrophoneRecording(con);
+            mic.startRecording();
+            return "Recording...";
+        } else {
+            mic.stopRecording();
+            InputStream rec = mic.getDataStream();
+
+            LinkedBlockingQueue<String> queue = new LinkedBlockingQueue();
+            Transcriber scribe = new Transcriber(rec, queue);
+            //transcribe.start(); //If you want a new thread
+            return scribe.transcribe(rec);
+        }
+    }
 
     public void disposeImpl() {
     }
