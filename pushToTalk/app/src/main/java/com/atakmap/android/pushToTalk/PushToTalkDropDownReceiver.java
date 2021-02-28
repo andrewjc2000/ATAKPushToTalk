@@ -30,8 +30,7 @@ public class PushToTalkDropDownReceiver extends DropDownReceiver implements
 
     public static final String SHOW_PLUGIN = "com.atakmap.android.pushToTalk.SHOW_PLUGIN";
 
-    private final View pushToTalkView;
-    private final Context pluginContext;
+
     private boolean recording;
     private MicrophoneRecording mic;
 
