@@ -7,5 +7,9 @@
 
     <string name="button_desc">Button to Start and Stop Speech to Text Transcription</string>
     <string name="promptConfirmText">Confirm Transcription is Correct Before Sending</string>
+    <string name="conversionsLabel">Automatic Conversions</string>
+    <string name="phonetic">Automatically convert Phonetic Alphabet to letters</string>
+    <string name="convertNumbers">Automatically convert numerical words to digits</string>
+    <string name="textAreaDesc">Edit the transcription of your audio before sending</string>
 
 </resources>
