@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
+import com.atakmap.android.chat.ChatManagerMapComponent;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
 import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
@@ -115,7 +116,7 @@ public class RecordingView {
     }
 
     public void sendMessage(String transcription) {
-        // todo actually send it to a chat
+        ChatManagerMapComponent.getInstance().sendMessage(transcription, SettingsView.getSelectedContacts());
         toast(transcription);
         processingRecording = false;
     }

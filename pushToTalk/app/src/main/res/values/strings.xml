@@ -11,5 +11,9 @@
     <string name="phonetic">Automatically convert Phonetic Alphabet to letters</string>
     <string name="convertNumbers">Automatically convert numerical words to digits</string>
     <string name="textAreaDesc">Edit the transcription of your audio before sending</string>
+    <string name="settingsLabel">Settings</string>
+    <string name="groupChatsHeader">Transcribed Messages will be Sent to:</string>
+    <string name="defaultGroupChatText">Group Chats will Appear here once they are loaded...</string>
+    <string name="noGroupChatsFoudMsg">No group chats found on this device</string>
 
 </resources>
