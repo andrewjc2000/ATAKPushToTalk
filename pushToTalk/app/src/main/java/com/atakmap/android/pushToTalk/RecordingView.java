@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.atakmap.android.pushToTalk.audioPipeline.SpeechTranscriber;
+
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.chat.ChatManagerMapComponent;
 import com.atakmap.android.maps.MapView;
@@ -22,11 +24,14 @@ public class RecordingView {
     private MapView mapView;
     private Context context;
 
+    private SpeechTranscriber scribe;
+
 
 
     public RecordingView(MapView mapView, final Context context) {
         this.context = context;
         this.mapView = mapView;
+        this.scribe = new SpeechTranscriber(context);
 
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
@@ -57,11 +62,12 @@ public class RecordingView {
             RecordingView.recording = !RecordingView.recording;
             toast("Recording has " + (recording ? " Started" : " Stopped"));
             if (!recording) {
-                processingRecording = true;
+                processingRecording = true; //FIXME: This is a racy variable
                 toast("Processing Audio...");
                 processRecording();
             } else {
                 //Start the recording here
+                while(!scribe.startRecording());
             }
         } else {
             toast("Cannot start or stop a recording while one is currently being processed");
@@ -70,11 +76,13 @@ public class RecordingView {
 
     public String getTranscription() {
         //Dump transcription here
-        return "TODO"
+        while (!scribe.isResultReady());
+        return scribe.getResult();
     }
 
     public void processRecording() {
         //Make sure recording is stopped
+        scribe.stopRecording();
         //TODO: Might need to spin off another thread for this
         String result = getTranscription();
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);

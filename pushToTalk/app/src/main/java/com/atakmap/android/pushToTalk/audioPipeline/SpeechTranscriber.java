@@ -1,7 +1,11 @@
 package com.atakmap.android.pushToTalk.audioPipeline;
 
 import android.util.Log;
+import android.content.Context;
+
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.io.File;
+import java.io.IOException;
 
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
@@ -29,7 +33,7 @@ public class SpeechTranscriber {
     /**
      * Logging tag
      **/
-    private static final TAG = "SpeechTranscriber";
+    private static final String TAG = "SpeechTranscriber";
 
     /**
      * Actually does the recognition + recording
@@ -59,7 +63,7 @@ public class SpeechTranscriber {
             }
 
             @Override
-            public void onError(Exception exception); {
+            public void onError(Exception exception) {
                 Log.e(TAG, exception.getMessage());
             }
 
@@ -72,13 +76,21 @@ public class SpeechTranscriber {
     /**
      * Constructs and sets up a new SpeechTranscriber
      **/
-    public SpeechTranscriber() {
+    public SpeechTranscriber(Context context) {
         try {
-            Assets assets = new Assets(this);
-            File assetDir = assets.syncAssets();
-            (new Thread() {public void run(){setupRecognizer(assetDir);}}).start();
+            final Assets assets = new Assets(context);
+            final File assetDir = assets.syncAssets();
+            (new Thread() {
+                    public void run(){
+                        try {
+                            setupRecognizer(assetDir);
+                        } catch (Exception e) {
+                            Log.e(TAG, e.getMessage());
+                        }
+                    }
+                }).start();
         } catch (IOException e) {
-            return e;
+            Log.e(TAG, e.getMessage());
         }
 
     }
@@ -108,11 +120,15 @@ public class SpeechTranscriber {
      * Returns the Result of transcription
      * if its ready, the empty string otherwise
      **/
-    public String result() {
+    public String getResult() {
         if (resultReady.get()) {
             return result;
         }
         return "";
+    }
+
+    public boolean isResultReady() {
+        return resultReady.get();
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
