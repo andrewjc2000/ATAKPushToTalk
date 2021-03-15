@@ -14,8 +14,6 @@ import android.widget.Toast;
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.chat.ChatManagerMapComponent;
 import com.atakmap.android.maps.MapView;
-import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
-import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
 
 public class RecordingView {
     private static boolean recording = false;
@@ -24,12 +22,11 @@ public class RecordingView {
     private MapView mapView;
     private Context context;
 
-    private MicrophoneRecording mic;
+
 
     public RecordingView(MapView mapView, final Context context) {
         this.context = context;
         this.mapView = mapView;
-        mic = new MicrophoneRecording(context);
 
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
@@ -64,7 +61,7 @@ public class RecordingView {
                 toast("Processing Audio...");
                 processRecording();
             } else {
-                mic.startRecording();
+                //Start the recording here
             }
         } else {
             toast("Cannot start or stop a recording while one is currently being processed");
@@ -72,13 +69,12 @@ public class RecordingView {
     }
 
     public String getTranscription() {
-        InputStream recData = mic.getDataStream();
-        Transcriber scribe = new Transcriber(recData, new LinkedBlockingQueue<String>());
-        return scribe.transcribe(recData);
+        //Dump transcription here
+        return "TODO"
     }
 
     public void processRecording() {
-        mic.stopRecording();
+        //Make sure recording is stopped
         //TODO: Might need to spin off another thread for this
         String result = getTranscription();
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);

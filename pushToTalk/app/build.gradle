@@ -282,10 +282,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: "${rootDir}/../libs", include: '*.jar')
+    implementation fileTree(dir: "${rootDir}/../libs", include: '*.aar')
     testImplementation 'junit:junit:4.13'
-    implementation 'edu.cmu.sphinx:sphinx4-core:5prealpha-SNAPSHOT'
-    compile group: 'edu.cmu.sphinx', name: 'sphinx4-core', version:'5prealpha-SNAPSHOT'
-    compile group: 'edu.cmu.sphinx', name: 'sphinx4-data', version:'5prealpha-SNAPSHOT'
+    compile project(':pocketsphinx-android-5prealpha-release')
 
 
     // implementation ('androidx.appcompat:appcompat:1.0.0') {
@@ -300,3 +299,6 @@ dependencies {
     //     exclude group: "androidx.viewpager"
     // }
 }
+ant.importBuild 'assets.xml'
+preBuild.dependsOn(list, checksum)
+clean.dependsOn(clean_assets)

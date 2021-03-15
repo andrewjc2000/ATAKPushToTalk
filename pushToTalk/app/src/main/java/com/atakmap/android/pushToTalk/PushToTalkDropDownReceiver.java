@@ -15,8 +15,6 @@ import com.atakmap.android.maps.MapView;
 import com.atakmap.android.dropdown.DropDown.OnStateListener;
 import com.atakmap.android.dropdown.DropDownReceiver;
 
-import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
-import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
 
 import com.atakmap.coremap.log.Log;
 
