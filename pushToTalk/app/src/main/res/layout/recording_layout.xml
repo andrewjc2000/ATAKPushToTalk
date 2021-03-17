@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fadeScrollbars="false">
-
-    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
         android:orientation="vertical">
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -16,13 +12,27 @@
             android:textColor="@color/white"
             android:fontFamily="monospace"
             android:text="@string/app_name"/>
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/button_desc"
-            android:src="@drawable/start_stop" />
+        <FrameLayout
+            android:id="@+id/buttonContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/stopButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/button_desc"
+                android:src="@drawable/stop"/>
+            <ImageView
+                android:id="@+id/startButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/button_desc"
+                android:src="@drawable/start"/>
+        </FrameLayout>
     </LinearLayout>
 
 </ScrollView>
