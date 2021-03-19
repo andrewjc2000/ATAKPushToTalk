@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.util.Log;
 
 import com.atakmap.android.pushToTalk.audioPipeline.SpeechTranscriber;
 
@@ -28,7 +29,7 @@ public class RecordingView {
 
     private SpeechTranscriber scribe;
 
-    private final String TAG = "RecordingView"
+    private final String TAG = "RecordingView";
 
 
 

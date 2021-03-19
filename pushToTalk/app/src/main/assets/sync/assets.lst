@@ -1,5 +1,6 @@
 cmudict-en-us.dict
 digits.gram
+en-70k-0.2-pruned.lm
 en-phone.dmp
 en-us-ptm/README
 en-us-ptm/feat.params

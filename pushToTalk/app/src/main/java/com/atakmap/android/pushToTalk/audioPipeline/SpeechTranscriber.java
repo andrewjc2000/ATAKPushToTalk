@@ -37,6 +37,8 @@ public class SpeechTranscriber {
      **/
     private static final String TAG = "SpeechTranscriber";
 
+    private static final String NGRAM_SEARCH = "ngram";
+
     /**
      * Actually does the recognition + recording
      **/
@@ -53,28 +55,39 @@ public class SpeechTranscriber {
 
             @Override
             public void onEndOfSpeech() {
-                Log.i(TAG, "Result recieved. Starting processing...");
-                result = hypothesis.getHypstr();
+                Log.i(TAG, "End of Speech");
                 resultReady.set(true);
             }
 
             @Override
-            public void onPartialResult(Hypothesis hypothesis) {}
+            public void onPartialResult(Hypothesis hypothesis) {
+                if (hypothesis != null) {
+                    Log.i(TAG, "Partial result recieved. Starting processing...");
+                    result = hypothesis.getHypstr();
+                    Log.i("Partial Result", result);
+                    resultReady.set(true);
+                }
+            }
 
             @Override
             public void onResult(Hypothesis hypothesis) {
                 Log.i(TAG, "Result recieved. Starting processing...");
                 result = hypothesis.getHypstr();
+                Log.i("Result", result);
                 resultReady.set(true);
             }
 
             @Override
             public void onError(Exception exception) {
                 Log.e(TAG, exception.getMessage());
+                resultReady.set(true);
             }
 
             @Override
-            public void onTimeout() {}
+            public void onTimeout() {
+                Log.i(TAG, "Transcriber timing out");
+                resultReady.set(true);
+            }
 
         };
 
@@ -123,7 +136,7 @@ public class SpeechTranscriber {
     public boolean startRecording() {
         if (ready.get()) {
             //Should listen for 10 seconds
-            recog.startListening("blah", 10000);
+            recog.startListening(NGRAM_SEARCH, 10000);
             return true;
         }
         return false;
@@ -157,7 +170,8 @@ public class SpeechTranscriber {
             .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
             .getRecognizer();
         recog.addListener(listeners);
-        recog.addKeyphraseSearch("blah", "blah");
+
+        recog.addNgramSearch(NGRAM_SEARCH, new File(assetsDir, "en-70k-0.2-pruned.lm"));
 
         ready.set(true);
     }
