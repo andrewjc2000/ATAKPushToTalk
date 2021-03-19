@@ -18,6 +18,7 @@ import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.chat.ChatManagerMapComponent;
 import com.atakmap.android.contact.Contact;
 import com.atakmap.android.maps.MapView;
+import com.atakmap.android.pushToTalk.audioPipeline.SpeechTranscriber;
 
 // import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
 // import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
@@ -29,12 +30,12 @@ public class RecordingView {
     private MapView mapView;
     private Context context;
 
-    private MicrophoneRecording mic;
+    private SpeechTranscriber scribe;
 
     public RecordingView(MapView mapView, final Context context) {
         this.context = context;
         this.mapView = mapView;
-        mic = new MicrophoneRecording(context);
+        scribe = new SpeechTranscriber(context);
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
             @Override
@@ -75,11 +76,16 @@ public class RecordingView {
         if (!processingRecording) {
             RecordingView.recording = !RecordingView.recording;
             if (!recording) {
+                toast("Stopping Recording");
                 processingRecording = true;
                 toast("Processing Audio...");
                 processRecording();
             } else {
-                mic.startRecording();
+                if (scribe.startRecording()) {
+                    toast("Recording...");
+                } else {
+                    toast("Plugin still configuring, please try again later.");
+                }
             }
         } else {
             toast("Cannot start or stop a recording while one is currently being processed");
@@ -87,15 +93,18 @@ public class RecordingView {
     }
 
     public String getTranscription() {
-        return "Some actual string here";
+        int waitCountMax = 100;
+        int waitCount = 0;
+        while (!scribe.isResultReady() && (waitCount < waitCountMax)) {
+            Log.i("RecordingView", "Waiting on Transcription to be ready!");
+            waitCount++;
+        }
+        return scribe.getResult();
     }
 
     public void processRecording() {
-        mic.stopRecording();
-        InputStream recData = mic.getDataStream();
-        Transcriber scribe = new Transcriber(recData, new LinkedBlockingQueue<String>());
-        //TODO: Might need to spin off another thread for this
-        String result = scribe.transcribe(recData);
+        scribe.stopRecording();
+        String result = getTranscription();
 
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);
         if (showConfirmationPrompt) {
