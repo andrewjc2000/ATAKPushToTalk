@@ -1,5 +1,7 @@
 package com.atakmap.android.pushToTalk.audioPipeline;
 
+import com.atakmap.coremap.filesystem.FileSystemUtils;
+
 import android.util.Log;
 import android.content.Context;
 
@@ -50,7 +52,11 @@ public class SpeechTranscriber {
             }
 
             @Override
-            public void onEndOfSpeech() {}
+            public void onEndOfSpeech() {
+                Log.i(TAG, "Result recieved. Starting processing...");
+                result = hypothesis.getHypstr();
+                resultReady.set(true);
+            }
 
             @Override
             public void onPartialResult(Hypothesis hypothesis) {}
@@ -77,20 +83,33 @@ public class SpeechTranscriber {
      * Constructs and sets up a new SpeechTranscriber
      **/
     public SpeechTranscriber(Context context) {
+
+
         try {
-            final Assets assets = new Assets(context);
+
+            File maybe = FileSystemUtils.getItem(FileSystemUtils.TOOL_DATA_DIRECTORY);
+            File myDir = new File(maybe, "pTTDataDir");
+            boolean result = myDir.mkdir();
+
+            final Assets assets = new Assets(context, myDir.getAbsolutePath());
             final File assetDir = assets.syncAssets();
-            (new Thread() {
-                    public void run(){
-                        try {
-                            setupRecognizer(assetDir);
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage());
-                        }
-                    }
-                }).start();
+            //            (new Thread() {
+            //            public void run(){
+            try {
+                setupRecognizer(assetDir);
+                Log.i(TAG, "Started SpeechTranscriber Setup");
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+                throw new Error(TAG + ": Broken");
+            }
+            Log.i(TAG, "Finished SpeechTranscriber Setup");
+                //     }
+                // }).start();
+
         } catch (IOException e) {
+            e.printStackTrace();
             Log.e(TAG, e.getMessage());
+            throw new Error("Setup failed. Killing the process");
         }
 
     }
@@ -103,7 +122,8 @@ public class SpeechTranscriber {
      **/
     public boolean startRecording() {
         if (ready.get()) {
-            recog.startListening("To Hell With Georgia!");
+            //Should listen for 10 seconds
+            recog.startListening("blah", 10000);
             return true;
         }
         return false;
@@ -137,6 +157,8 @@ public class SpeechTranscriber {
             .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
             .getRecognizer();
         recog.addListener(listeners);
+        recog.addKeyphraseSearch("blah", "blah");
+
         ready.set(true);
     }
 

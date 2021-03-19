@@ -2,6 +2,7 @@ package com.atakmap.android.pushToTalk;
 
 import java.io.InputStream;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.io.File;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.atakmap.android.pushToTalk.audioPipeline.SpeechTranscriber;
 
+import com.atakmap.coremap.filesystem.FileSystemUtils;
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.chat.ChatManagerMapComponent;
 import com.atakmap.android.maps.MapView;
@@ -26,18 +28,45 @@ public class RecordingView {
 
     private SpeechTranscriber scribe;
 
+    private final String TAG = "RecordingView"
+
 
 
     public RecordingView(MapView mapView, final Context context) {
         this.context = context;
         this.mapView = mapView;
+        toast("One");
         this.scribe = new SpeechTranscriber(context);
+        toast("Two");
 
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (v.getId() == R.id.imageView) {
+                    toast(context.getFilesDir().toString());
+                    String error = "";
+
+                    try {
+
+
+
+                        File startDir = context.getFilesDir();
+                        File maybe = FileSystemUtils.getItem(FileSystemUtils.TOOL_DATA_DIRECTORY);
+
+                        File myDir = new File(maybe, "myTools");
+
+                        toast(maybe.toString());
+
+                        toast("" + myDir.createNewFile());
+
+
+                    } catch (Exception e) {
+                        error = e.getMessage();
+                        toast("Error: " + error);
+                    }
+
+
                     toast((recording ? "Stops" : "Starts") + " the recording of the ATAK PTT System");
                 }
                 return true;
@@ -67,7 +96,9 @@ public class RecordingView {
                 processRecording();
             } else {
                 //Start the recording here
-                while(!scribe.startRecording());
+                while(!scribe.startRecording()) {
+                    Log.i(TAG, "Waiting for recording to be ready");
+                };
             }
         } else {
             toast("Cannot start or stop a recording while one is currently being processed");
@@ -76,7 +107,9 @@ public class RecordingView {
 
     public String getTranscription() {
         //Dump transcription here
-        while (!scribe.isResultReady());
+        while (!scribe.isResultReady()) {
+            Log.i(TAG, "Waiting for result to be ready");
+        };
         return scribe.getResult();
     }
 

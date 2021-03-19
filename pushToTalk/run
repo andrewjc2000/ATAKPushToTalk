@@ -1,0 +1,5 @@
+echo "Building..."
+gradle assembleCivDebug
+gradle installCivDebug
+echo "Starting logs..."
+/Users/jackkelly/Library/Android/sdk/platform-tools/adb logcat > ~/logs.log
