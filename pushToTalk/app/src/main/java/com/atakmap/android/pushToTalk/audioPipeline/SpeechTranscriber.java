@@ -106,18 +106,19 @@ public class SpeechTranscriber {
 
             final Assets assets = new Assets(context, myDir.getAbsolutePath());
             final File assetDir = assets.syncAssets();
-            //            (new Thread() {
-            //            public void run(){
-            try {
-                setupRecognizer(assetDir);
-                Log.i(TAG, "Started SpeechTranscriber Setup");
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-                throw new Error(TAG + ": Broken");
-            }
-            Log.i(TAG, "Finished SpeechTranscriber Setup");
-                //     }
-                // }).start();
+
+            (new Thread() {
+                    public void run(){
+                        try {
+                            setupRecognizer(assetDir);
+                            Log.i(TAG, "Started SpeechTranscriber Setup");
+                        } catch (Exception e) {
+                            Log.e(TAG, e.getMessage());
+                            throw new Error(TAG + ": Broken");
+                        }
+                        Log.i(TAG, "Finished SpeechTranscriber Setup");
+                    }
+                }).start();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,8 +136,10 @@ public class SpeechTranscriber {
      **/
     public boolean startRecording() {
         if (ready.get()) {
-            //Should listen for 10 seconds
-            recog.startListening(NGRAM_SEARCH, 10000);
+            //configure timeout in orders of 10 seconds
+            int tenSeconds = 10000;
+
+            recog.startListening(NGRAM_SEARCH, tenSeconds * 6);
             return true;
         }
         return false;

@@ -5,3 +5,4 @@ pushToTalk/app/build
 pushToTalk/.idea/
 pushToTalk/.takdev
 *~
+.DS_Store
