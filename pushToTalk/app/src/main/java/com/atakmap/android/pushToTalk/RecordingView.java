@@ -2,7 +2,6 @@ package com.atakmap.android.pushToTalk;
 
 import java.io.InputStream;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.io.File;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,14 +10,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.util.Log;
 
-import com.atakmap.android.pushToTalk.audioPipeline.SpeechTranscriber;
-
-import com.atakmap.coremap.filesystem.FileSystemUtils;
 import com.atak.plugins.impl.PluginLayoutInflater;
-import com.atakmap.android.chat.ChatManagerMapComponent;
 import com.atakmap.android.maps.MapView;
+import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
+import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
 
 public class RecordingView {
     private static boolean recording = false;
@@ -27,47 +23,18 @@ public class RecordingView {
     private MapView mapView;
     private Context context;
 
-    private SpeechTranscriber scribe;
-
-    private final String TAG = "RecordingView";
-
-
+    private MicrophoneRecording mic;
 
     public RecordingView(MapView mapView, final Context context) {
         this.context = context;
         this.mapView = mapView;
-        toast("One");
-        this.scribe = new SpeechTranscriber(context);
-        toast("Two");
+        mic = new MicrophoneRecording(context);
 
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (v.getId() == R.id.imageView) {
-                    toast(context.getFilesDir().toString());
-                    String error = "";
-
-                    try {
-
-
-
-                        File startDir = context.getFilesDir();
-                        File maybe = FileSystemUtils.getItem(FileSystemUtils.TOOL_DATA_DIRECTORY);
-
-                        File myDir = new File(maybe, "myTools");
-
-                        toast(maybe.toString());
-
-                        toast("" + myDir.createNewFile());
-
-
-                    } catch (Exception e) {
-                        error = e.getMessage();
-                        toast("Error: " + error);
-                    }
-
-
                     toast((recording ? "Stops" : "Starts") + " the recording of the ATAK PTT System");
                 }
                 return true;
@@ -92,14 +59,11 @@ public class RecordingView {
             RecordingView.recording = !RecordingView.recording;
             toast("Recording has " + (recording ? " Started" : " Stopped"));
             if (!recording) {
-                processingRecording = true; //FIXME: This is a racy variable
+                processingRecording = true;
                 toast("Processing Audio...");
                 processRecording();
             } else {
-                //Start the recording here
-                while(!scribe.startRecording()) {
-                    Log.i(TAG, "Waiting for recording to be ready");
-                };
+                mic.startRecording();
             }
         } else {
             toast("Cannot start or stop a recording while one is currently being processed");
@@ -107,18 +71,16 @@ public class RecordingView {
     }
 
     public String getTranscription() {
-        //Dump transcription here
-        while (!scribe.isResultReady()) {
-            Log.i(TAG, "Waiting for result to be ready");
-        };
-        return scribe.getResult();
+        return "Some actual string here";
     }
 
     public void processRecording() {
-        //Make sure recording is stopped
-        scribe.stopRecording();
+        mic.stopRecording();
+        InputStream recData = mic.getDataStream();
+        Transcriber scribe = new Transcriber(recData, new LinkedBlockingQueue<String>());
         //TODO: Might need to spin off another thread for this
-        String result = getTranscription();
+        String result = scribe.transcribe(recData);
+
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);
         if (showConfirmationPrompt) {
             showConfirmationPrompt(result);
@@ -154,7 +116,7 @@ public class RecordingView {
     }
 
     public void sendMessage(String transcription) {
-        ChatManagerMapComponent.getInstance().sendMessage(transcription, SettingsView.getSelectedContacts());
+        // todo actually send it to a chat
         toast(transcription);
         processingRecording = false;
     }
