@@ -1,20 +1,26 @@
 package com.atakmap.android.pushToTalk;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.Image;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
+import com.atakmap.android.chat.ChatManagerMapComponent;
+import com.atakmap.android.contact.Contact;
 import com.atakmap.android.maps.MapView;
-import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
-import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
+
+// import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
+// import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
 
 public class RecordingView {
     private static boolean recording = false;
@@ -29,25 +35,36 @@ public class RecordingView {
         this.context = context;
         this.mapView = mapView;
         mic = new MicrophoneRecording(context);
-
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (v.getId() == R.id.imageView) {
+                if (v.getId() == R.id.startButton || v.getId() == R.id.stopButton) {
                     toast((recording ? "Stops" : "Starts") + " the recording of the ATAK PTT System");
                 }
                 return true;
             }
         };
-        final ImageView toggleRecordingButton = recordingView.findViewById(R.id.imageView);
-        toggleRecordingButton.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleRecording();
+                if (recording || !SettingsView.getSelectedContacts().isEmpty()) {
+                    FrameLayout container = recordingView.findViewById(R.id.buttonContainer);
+                    View removedView = container.getChildAt(1);
+                    container.removeView(removedView);
+                    container.addView(removedView, 0);
+                    toggleRecording();
+                } else {
+                    toast("You must select one or more contacts in Settings before you record");
+                }
             }
-        });
-        toggleRecordingButton.setOnLongClickListener(longClickListener);
+        };
+        final ImageView startButton = recordingView.findViewById(R.id.startButton);
+        final ImageView stopButton = recordingView.findViewById(R.id.stopButton);
+        startButton.setOnLongClickListener(longClickListener);
+        stopButton.setOnLongClickListener(longClickListener);
+        startButton.setOnClickListener(clickListener);
+        stopButton.setOnClickListener(clickListener);
     }
 
     public View getRecordingView() {
@@ -57,7 +74,6 @@ public class RecordingView {
     private void toggleRecording() {
         if (!processingRecording) {
             RecordingView.recording = !RecordingView.recording;
-            toast("Recording has " + (recording ? " Started" : " Stopped"));
             if (!recording) {
                 processingRecording = true;
                 toast("Processing Audio...");
@@ -115,9 +131,14 @@ public class RecordingView {
             .show();
     }
 
-    public void sendMessage(String transcription) {
-        // todo actually send it to a chat
-        toast(transcription);
+    public synchronized void sendMessage(String transcription) {
+        List<Contact> toSend = SettingsView.getSelectedContacts();
+        if (toSend.isEmpty()) {
+            toast("Did not send message because no contacts were selected.");
+        } else {
+            toast(transcription);
+            ChatManagerMapComponent.getInstance().sendMessage(transcription, toSend);
+        }
         processingRecording = false;
     }
 
