@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import android.util.Log;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
