@@ -39,9 +39,12 @@ public class PushToTalkDropDownReceiver extends DropDownReceiver implements
             pushToTalkView = PluginLayoutInflater.inflate(context, R.layout.navigation, null);
             TabHost tabHost = pushToTalkView.findViewById(R.id.tabHost);
             tabHost.setup();
-            final View recordingView = new RecordingView(getMapView(), context).getRecordingView();
+            NotesView nv = new NotesView(getMapView(), context);
+            final View notesView = nv.getNotesView();
+            final View recordingView = new RecordingView(getMapView(),
+                                                         context,
+                                                         nv).getRecordingView();
             final View settingsView = new SettingsView(getMapView(), context).getSettingsView();
-            final View notesView = new NotesView(getMapView(), context).getNotesView();
             TabHost.TabSpec recordingSpec = tabHost.newTabSpec("recording").setIndicator("Record Audio");
             recordingSpec.setContent(
                                      new TabHost.TabContentFactory() {

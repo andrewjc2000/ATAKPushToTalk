@@ -30,12 +30,13 @@ public class RecordingView {
     private View recordingView;
     private MapView mapView;
     private Context context;
-
+    private NotesView notes;
     private SpeechTranscriber scribe;
 
-    public RecordingView(MapView mapView, final Context context) {
+    public RecordingView(MapView mapView, final Context context, NotesView notes) {
         this.context = context;
         this.mapView = mapView;
+        this.notes = notes;
         scribe = new SpeechTranscriber(context);
         recordingView = PluginLayoutInflater.inflate(context, R.layout.recording_layout, null);
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
@@ -142,6 +143,9 @@ public class RecordingView {
     }
 
     public synchronized void sendMessage(String transcription) {
+        //Send to Notes
+        notes.addText(transcription);
+        //Send to contacts
         List<Contact> toSend = SettingsView.getSelectedContacts();
         if (toSend.isEmpty()) {
             toast("Did not send message because no contacts were selected.");
