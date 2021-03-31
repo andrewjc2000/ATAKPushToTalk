@@ -41,25 +41,36 @@ public class PushToTalkDropDownReceiver extends DropDownReceiver implements
             tabHost.setup();
             final View recordingView = new RecordingView(getMapView(), context).getRecordingView();
             final View settingsView = new SettingsView(getMapView(), context).getSettingsView();
+            final View notesView = new NotesView(getMapView(), context).getNotesView();
             TabHost.TabSpec recordingSpec = tabHost.newTabSpec("recording").setIndicator("Record Audio");
             recordingSpec.setContent(
-                new TabHost.TabContentFactory() {
-                    @Override
-                    public View createTabContent(String s) {
-                        return recordingView;
-                    }
-                }
-            );
+                                     new TabHost.TabContentFactory() {
+                                         @Override
+                                         public View createTabContent(String s) {
+                                             return recordingView;
+                                         }
+                                     }
+                                     );
+            TabHost.TabSpec notesSpec = tabHost.newTabSpec("notes").setIndicator("Notes");
+            notesSpec.setContent(
+                                    new TabHost.TabContentFactory() {
+                                        @Override
+                                        public View createTabContent(String s) {
+                                            return notesView;
+                                        }
+                                    }
+                                    );
             TabHost.TabSpec settingsSpec = tabHost.newTabSpec("settings").setIndicator("Settings");
             settingsSpec.setContent(
-                new TabHost.TabContentFactory() {
-                    @Override
-                    public View createTabContent(String s) {
-                        return settingsView;
-                    }
-                }
-            );
+                                    new TabHost.TabContentFactory() {
+                                        @Override
+                                        public View createTabContent(String s) {
+                                            return settingsView;
+                                        }
+                                    }
+                                    );
             tabHost.addTab(recordingSpec);
+            tabHost.addTab(notesSpec);
             tabHost.addTab(settingsSpec);
         } catch (Throwable t) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
