@@ -3,6 +3,9 @@ package com.atakmap.android.pushToTalk;
 import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import android.util.Log;
 import android.app.AlertDialog;
@@ -47,7 +50,14 @@ public class NotesView {
 
     public void addText(String text) {
         Editable data = textPane.getText();
-        data.insert(data.length(), text);
+        data.insert(data.length(), buildEntry(text));
+    }
+
+    private String buildEntry(String data) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd@HH:mm", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        String prefix = "\n\n[" + currentDateandTime + "] ";
+        return prefix + data;
     }
 
 }
