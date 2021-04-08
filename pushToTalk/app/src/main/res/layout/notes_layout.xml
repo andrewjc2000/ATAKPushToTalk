@@ -7,11 +7,20 @@
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:fontFamily="monospace"
-            android:text="Notes"/>
+            android:textSize="24sp"
+            android:text="@string/notes"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:fontFamily="monospace"
+            android:textSize="20sp"
+            android:text="@string/notes_desc"/>
         <EditText
             android:id="@+id/plain_text_input"
             android:layout_height="wrap_content"

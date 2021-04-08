@@ -4,15 +4,19 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.Image;
+import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
@@ -51,14 +55,19 @@ public class RecordingView {
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (recording || !SettingsView.getSelectedContacts().isEmpty()) {
-                    FrameLayout container = recordingView.findViewById(R.id.buttonContainer);
+                if (recording || canStartRecording()) {
+                    RelativeLayout container = recordingView.findViewById(R.id.buttonContainer);
                     View removedView = container.getChildAt(1);
                     container.removeView(removedView);
                     container.addView(removedView, 0);
+                    toast("Swapped children");
                     toggleRecording();
                 } else {
-                    toast("You must select one or more contacts in Settings before you record");
+                    if (SettingsView.getSelectedContacts().isEmpty()) {
+                        toast("You must select one or more contacts in Settings before you record");
+                    } else {
+                        toast("Plugin still configuring, please try again later.");
+                    }
                 }
             }
         };
@@ -74,19 +83,21 @@ public class RecordingView {
         return recordingView;
     }
 
+    private boolean canStartRecording() {
+        return !recording && !SettingsView.getSelectedContacts().isEmpty() && scribe.getReady();
+    }
+
     private void toggleRecording() {
         if (!processingRecording) {
-            RecordingView.recording = !RecordingView.recording;
-            if (!recording) {
-                toast("Stopping Recording");
+            if (recording) {
+                RecordingView.recording = false;
+                toast("Recording has stopped.");
                 processingRecording = true;
-                toast("Processing Audio...");
                 processRecording();
             } else {
                 if (scribe.startRecording()) {
+                    RecordingView.recording = true;
                     toast("Recording...");
-                } else {
-                    toast("Plugin still configuring, please try again later.");
                 }
             }
         } else {
@@ -107,7 +118,6 @@ public class RecordingView {
     public void processRecording() {
         scribe.stopRecording();
         String result = getTranscription();
-
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);
         if (showConfirmationPrompt) {
             showConfirmationPrompt(result);

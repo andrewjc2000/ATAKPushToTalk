@@ -22,6 +22,10 @@ public class SpeechTranscriber {
      **/
     private AtomicBoolean ready = new AtomicBoolean(false);
 
+    public synchronized boolean getReady() {
+        return ready.get();
+    }
+
     /**
      *
      **/
@@ -158,7 +162,7 @@ public class SpeechTranscriber {
      **/
     public String getResult() {
         if (resultReady.get()) {
-            return result;
+            return result == null ? "" : result;
         }
         return "";
     }
