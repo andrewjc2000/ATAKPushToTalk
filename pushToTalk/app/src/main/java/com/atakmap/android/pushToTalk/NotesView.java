@@ -14,7 +14,7 @@ import com.atakmap.android.maps.MapView;
 
 /**
  * Class representing the Notes tab of the Push-To-Talk plugin
- * @author jkkelly80
+ * @author jkelly80
  * @version 1.0
  */
 public class NotesView {

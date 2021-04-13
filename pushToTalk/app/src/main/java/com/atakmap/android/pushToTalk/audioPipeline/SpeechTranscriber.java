@@ -18,7 +18,7 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 /**
  * Class responsible for initiating and terminating audio recording,
  * as well as converting that recording to transcribed text.
- * @author jkkelly80
+ * @author jkelly80
  * @version 1.0
  */
 public class SpeechTranscriber {
