@@ -6,31 +6,36 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.Toast;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.io.File;
-import java.io.InputStream;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.dropdown.DropDown.OnStateListener;
 import com.atakmap.android.dropdown.DropDownReceiver;
-
-
 import com.atakmap.coremap.log.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class PushToTalkDropDownReceiver extends DropDownReceiver implements
-        OnStateListener {
+/**
+ * The overall receiver component containing the ATAK Push-to-Talk plugin
+ * @author achafos3
+ * @version 1.0
+ */
+public class PushToTalkDropDownReceiver extends DropDownReceiver implements OnStateListener {
 
     public static final String TAG = PushToTalkDropDownReceiver.class.getSimpleName();
-
     public static final String SHOW_PLUGIN = "com.atakmap.android.pushToTalk.SHOW_PLUGIN";
 
     private View pushToTalkView;
     private Context pluginContext;
 
+    /**
+     * Initializes the overall "receiver" component that consitutes the entire layout
+     * and functionality of the Push-to-Talk plugin. Here, the tabbed header is initialized
+     * with the three screens of our application.
+     * @param mapView the encompassing MapView component for the plugin
+     * @param context the current Android context
+     */
     public PushToTalkDropDownReceiver(final MapView mapView,
                                       final Context context) {
         super(mapView);
@@ -39,39 +44,37 @@ public class PushToTalkDropDownReceiver extends DropDownReceiver implements
             pushToTalkView = PluginLayoutInflater.inflate(context, R.layout.navigation, null);
             TabHost tabHost = pushToTalkView.findViewById(R.id.tabHost);
             tabHost.setup();
-            NotesView nv = new NotesView(getMapView(), context);
-            final View notesView = nv.getNotesView();
-            final View recordingView = new RecordingView(getMapView(),
-                                                         context,
-                                                         nv).getRecordingView();
+            NotesView notesView = new NotesView(getMapView(), context);
+            final View notesAndroidComponent = notesView.getAndroidComponent();
+            final View recordingView = new RecordingView(getMapView(), context, notesView).getRecordingView();
             final View settingsView = new SettingsView(getMapView(), context).getSettingsView();
             TabHost.TabSpec recordingSpec = tabHost.newTabSpec("recording").setIndicator("Record Audio");
             recordingSpec.setContent(
-                                     new TabHost.TabContentFactory() {
-                                         @Override
-                                         public View createTabContent(String s) {
-                                             return recordingView;
-                                         }
-                                     }
-                                     );
+                new TabHost.TabContentFactory() {
+                    @Override
+                    public View createTabContent(String s) {
+                        return recordingView;
+                    }
+                }
+            );
             TabHost.TabSpec notesSpec = tabHost.newTabSpec("notes").setIndicator("Notes");
             notesSpec.setContent(
-                                    new TabHost.TabContentFactory() {
-                                        @Override
-                                        public View createTabContent(String s) {
-                                            return notesView;
-                                        }
-                                    }
-                                    );
+                new TabHost.TabContentFactory() {
+                    @Override
+                    public View createTabContent(String s) {
+                        return notesAndroidComponent;
+                    }
+                }
+            );
             TabHost.TabSpec settingsSpec = tabHost.newTabSpec("settings").setIndicator("Settings");
             settingsSpec.setContent(
-                                    new TabHost.TabContentFactory() {
-                                        @Override
-                                        public View createTabContent(String s) {
-                                            return settingsView;
-                                        }
-                                    }
-                                    );
+                new TabHost.TabContentFactory() {
+                    @Override
+                    public View createTabContent(String s) {
+                        return settingsView;
+                    }
+                }
+            );
             tabHost.addTab(recordingSpec);
             tabHost.addTab(notesSpec);
             tabHost.addTab(settingsSpec);

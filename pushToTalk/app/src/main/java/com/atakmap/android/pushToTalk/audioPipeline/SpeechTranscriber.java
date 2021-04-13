@@ -15,25 +15,28 @@ import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
+/**
+ * Class responsible for initiating and terminating audio recording,
+ * as well as converting that recording to transcribed text.
+ * @author jkkelly80
+ * @version 1.0
+ */
 public class SpeechTranscriber {
 
     /**
      * Is this SpeechTranscriber finished setting up
-     **/
+     */
     private AtomicBoolean ready = new AtomicBoolean(false);
 
     public synchronized boolean getReady() {
         return ready.get();
     }
 
-    /**
-     *
-     **/
     private AtomicBoolean resultReady = new AtomicBoolean(false);
 
     /**
-     * The resulting string trancsription produces
-     **/
+     * The resulting string transcription produces
+     */
     private String result;
 
     /**
@@ -45,91 +48,82 @@ public class SpeechTranscriber {
 
     /**
      * Actually does the recognition + recording
-     **/
-    private SpeechRecognizer recog;
+     */
+    private SpeechRecognizer recognizer;
     /**
      * Holds the code that is run once recognition finishes
-     **/
-    private RecognitionListener listeners = new RecognitionListener() {
+     */
+    private final RecognitionListener listener = new RecognitionListener() {
+        @Override
+        public void onBeginningOfSpeech() {
+            Log.i(TAG, "Starting Recording/Transcription");
+        }
 
-            @Override
-            public void onBeginningOfSpeech() {
-                Log.i(TAG, "Starting Recording/Transcription");
-            }
+        @Override
+        public void onEndOfSpeech() {
+            Log.i(TAG, "End of Speech");
+            resultReady.set(true);
+        }
 
-            @Override
-            public void onEndOfSpeech() {
-                Log.i(TAG, "End of Speech");
-                resultReady.set(true);
-            }
-
-            @Override
-            public void onPartialResult(Hypothesis hypothesis) {
-                if (hypothesis != null) {
-                    Log.i(TAG, "Partial result recieved. Starting processing...");
-                    result = hypothesis.getHypstr();
-                    Log.i("Partial Result", result);
-                    resultReady.set(true);
-                }
-            }
-
-            @Override
-            public void onResult(Hypothesis hypothesis) {
-                Log.i(TAG, "Result recieved. Starting processing...");
+        @Override
+        public void onPartialResult(Hypothesis hypothesis) {
+            if (hypothesis != null) {
+                Log.i(TAG, "Partial result recieved. Starting processing...");
                 result = hypothesis.getHypstr();
-                Log.i("Result", result);
+                Log.i("Partial Result", result);
                 resultReady.set(true);
             }
+        }
 
-            @Override
-            public void onError(Exception exception) {
-                Log.e(TAG, exception.getMessage());
-                resultReady.set(true);
-            }
+        @Override
+        public void onResult(Hypothesis hypothesis) {
+            Log.i(TAG, "Result recieved. Starting processing...");
+            result = hypothesis.getHypstr();
+            Log.i("Result", result);
+            resultReady.set(true);
+        }
 
-            @Override
-            public void onTimeout() {
-                Log.i(TAG, "Transcriber timing out");
-                resultReady.set(true);
-            }
+        @Override
+        public void onError(Exception exception) {
+            Log.e(TAG, exception.getMessage());
+            resultReady.set(true);
+        }
 
-        };
+        @Override
+        public void onTimeout() {
+            Log.i(TAG, "Transcriber timing out");
+            resultReady.set(true);
+        }
+
+    };
 
 
     /**
      * Constructs and sets up a new SpeechTranscriber
      **/
     public SpeechTranscriber(Context context) {
-
-
         try {
-
             File maybe = FileSystemUtils.getItem(FileSystemUtils.TOOL_DATA_DIRECTORY);
             File myDir = new File(maybe, "pTTDataDir");
-            boolean result = myDir.mkdir();
-
             final Assets assets = new Assets(context, myDir.getAbsolutePath());
             final File assetDir = assets.syncAssets();
-
-            (new Thread() {
-                    public void run(){
-                        try {
-                            setupRecognizer(assetDir);
-                            Log.i(TAG, "Started SpeechTranscriber Setup");
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage());
-                            throw new Error(TAG + ": Broken");
-                        }
-                        Log.i(TAG, "Finished SpeechTranscriber Setup");
+            new Thread() {
+                public void run() {
+                    try {
+                        setupRecognizer(assetDir);
+                        Log.i(TAG, "Started SpeechTranscriber Setup");
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
+                        throw new Error(TAG + ": Broken");
                     }
-                }).start();
-
+                    Log.i(TAG, "Finished SpeechTranscriber Setup");
+                }
+            }.start();
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(TAG, e.getMessage());
             throw new Error("Setup failed. Killing the process");
         }
-
     }
 
     /**
@@ -142,8 +136,7 @@ public class SpeechTranscriber {
         if (ready.get()) {
             //configure timeout in orders of 10 seconds
             int tenSeconds = 10000;
-
-            recog.startListening(NGRAM_SEARCH, tenSeconds * 6);
+            recognizer.startListening(NGRAM_SEARCH, tenSeconds * 6);
             return true;
         }
         return false;
@@ -153,7 +146,7 @@ public class SpeechTranscriber {
      * Stops recording
      **/
     public void stopRecording() {
-        recog.stop();
+        recognizer.stop();
     }
 
     /**
@@ -172,16 +165,13 @@ public class SpeechTranscriber {
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
-        recog = SpeechRecognizerSetup.defaultSetup()
+        recognizer = SpeechRecognizerSetup.defaultSetup()
             .setAcousticModel(new File(assetsDir, "en-us-ptm"))
             .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
             .getRecognizer();
-        recog.addListener(listeners);
-
-        recog.addNgramSearch(NGRAM_SEARCH, new File(assetsDir, "en-70k-0.2-pruned.lm"));
-
+        recognizer.addListener(listener);
+        recognizer.addNgramSearch(NGRAM_SEARCH, new File(assetsDir, "en-70k-0.2-pruned.lm"));
         ready.set(true);
     }
-
 
 }

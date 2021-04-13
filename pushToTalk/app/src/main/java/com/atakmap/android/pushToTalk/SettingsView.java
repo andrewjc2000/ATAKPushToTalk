@@ -17,25 +17,49 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+/**
+ * Screen in which various settings can be configured. Particularly, the user
+ * can choose to enable or disable a confirmation prompt being displayed before sending a
+ * transcription, and more critically allows the user to select various contacts to which the
+ * transcription is sent, a prerequisite for starting recording at all.
+ * @author achafos3
+ * @version 1.0
+ */
 public class SettingsView {
     private View settingsView;
     private MapView mapView;
 
     /**
-     * All Configured Settings
+     * A mapping from Checkbox IDs to booleans. A Checkbox ID being mapped to true represents
+     * it being enabled, and an ID being mapped to false represents it being disabled.
      */
-    private static Map<Integer, Boolean> booleanSettingsMap;
-    private static final int[] checkBoxIds = {R.id.showPromptBeforeSending, R.id.phoneticAlphabet, R.id.convertNumbers};
+    private static final Map<Integer, Boolean> booleanSettingsMap;
+    private static final int[] checkBoxIds = {
+        R.id.showPromptBeforeSending, R.id.phoneticAlphabet, R.id.convertNumbers
+    };
     static {
         booleanSettingsMap = new HashMap<>();
         for (int id: checkBoxIds) {
             booleanSettingsMap.put(id, true);
         }
     }
+    /**
+     * A mapping from contacts to boolean values, representing whether or not the user
+     * has selected each particular contact for transcriptions to be sent to. This map is left
+     * empty at static-time because contact information cannot be obtained until ATAK is ready,
+     * which at a minimum is guaranteed to be true in the constructor.
+     */
     private static final HashMap<Contact, Boolean> contactMap = new HashMap<>();
 
+    /**
+     * Initializes the Setting screen layout. First, sets up various checkbox handlers to set
+     * their respective boolean values when active or inactive. Then, initializes the Contact
+     * map, adding a checkbox for each contact and setting up similar handlers to appropriately
+     * change boolean values in the contact map.
+     * @param mapView the encompassing MapView component for the plugin
+     * @param context the current Android context
+     */
     public SettingsView(MapView mapView, final Context context) {
         this.mapView = mapView;
         settingsView = PluginLayoutInflater.inflate(context, R.layout.settings_layout, null);
@@ -66,7 +90,11 @@ public class SettingsView {
                 CheckBox contactSelectedBox = new CheckBox(context);
                 contactSelectedBox.setChecked(false);
                 contactSelectedBox.setText(contact.getName());
-                contactSelectedBox.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+                contactSelectedBox.setLayoutParams(
+                    new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
+                    )
+                );
                 contactSelectedBox.setOnCheckedChangeListener(
                     new CompoundButton.OnCheckedChangeListener() {
                         @Override
@@ -80,6 +108,10 @@ public class SettingsView {
         }
     }
 
+    /**
+     * Gets the Contacts that the user has selected for the transcription to be sent to.
+     * @return a List of contacts as described above
+     */
     public static List<Contact> getSelectedContacts() {
         List<Contact> selectedContacts = new ArrayList<>();
         for (Contact c: contactMap.keySet()) {
@@ -90,10 +122,20 @@ public class SettingsView {
         return selectedContacts;
     }
 
+    /**
+     * Of the non-contact settings, returns true if a checkbox is enabled and false otherwise.
+     * @param id the Android-generated ID of the setting in question
+     * @return a boolean value as described above
+     */
     public static boolean getSettingEnabled(int id) {
         return booleanSettingsMap.get(id) == null ? false : booleanSettingsMap.get(id);
     }
 
+    /**
+     * Getter for the Android layout component corresponding to this screen.
+     * Used to set up the tabbed view in PushToTalkDropDownReceiver
+     * @return the Android component as described above
+     */
     public View getSettingsView() {
         return settingsView;
     }

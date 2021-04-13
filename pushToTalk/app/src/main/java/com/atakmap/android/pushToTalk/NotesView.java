@@ -12,6 +12,11 @@ import android.text.Editable;
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
 
+/**
+ * Class representing the Notes tab of the Push-To-Talk plugin
+ * @author jkkelly80
+ * @version 1.0
+ */
 public class NotesView {
 
     private View notesView;
@@ -21,19 +26,27 @@ public class NotesView {
     private EditText textPane;
 
 
+    /**
+     * 2-argument constructor for NotesView that sets up the layout elements needed for the
+     * Notes tab
+     * @param mapView the encompassing MapView component for the plugin
+     * @param context the current Android context
+     */
     public NotesView(MapView mapView, Context context) {
         this.context = context;
         this.mapView = mapView;
         notesView = PluginLayoutInflater.inflate(context, R.layout.notes_layout, null);
-
         textPane = notesView.findViewById(R.id.plain_text_input);
-
     }
 
-    public View getNotesView() {
+    public View getAndroidComponent() {
         return notesView;
     }
 
+    /**
+     * Adds some text to the overall Editable text element of the Notes View
+     * @param text the text to be added to the editable text
+     */
     public void addText(String text) {
         Editable data = textPane.getText();
         data.insert(data.length(), buildEntry(text));

@@ -1,20 +1,13 @@
 package com.atakmap.android.pushToTalk;
 
-import java.io.InputStream;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import android.content.res.Resources;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.media.Image;
-import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -25,11 +18,20 @@ import com.atakmap.android.contact.Contact;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.pushToTalk.audioPipeline.SpeechTranscriber;
 
-// import com.atakmap.android.pushToTalk.audioPipeline.MicrophoneRecording;
-// import com.atakmap.android.pushToTalk.audioPipeline.Transcriber;
-
+/**
+ * Screen in which recording and transcription take place. This creates a basic GUI
+ * with a large recording button, and also sets up a prompt that optionally appears
+ * depending on settings enabling the user to review a transcription before it is sent.
+ * @author achafos3
+ * @version 1.0
+ */
 public class RecordingView {
     private static boolean recording = false;
+    /**
+     * Is set to true during the entire period in which the transcription is being processed
+     * AND edited. Is not set back to false until either the transcription sending is cancelled
+     * or completed.
+     */
     private static boolean processingRecording = false;
     private View recordingView;
     private MapView mapView;
@@ -37,6 +39,14 @@ public class RecordingView {
     private NotesView notes;
     private SpeechTranscriber scribe;
 
+    /**
+     * Initializes the Recording View, which entails setting up the proper short/long press
+     * handlers, which in turn call other functions here and in the transcriber class in order
+     * to obtain relevant settings and perform transcription
+     * @param mapView the encompassing MapView component for the plugin
+     * @param context the current Android context
+     * @param notes the NotesView to which all transcriptions will be sent, in addition to chat
+     */
     public RecordingView(MapView mapView, final Context context, NotesView notes) {
         this.context = context;
         this.mapView = mapView;
@@ -56,11 +66,12 @@ public class RecordingView {
             @Override
             public void onClick(View v) {
                 if (recording || canStartRecording()) {
+                    // swaps the current button with the one immediately behind it. On the GUI,
+                    // the "Stop Recording" button is behind the "Start Recording" button or vice versa.
                     RelativeLayout container = recordingView.findViewById(R.id.buttonContainer);
                     View removedView = container.getChildAt(1);
                     container.removeView(removedView);
                     container.addView(removedView, 0);
-                    toast("Swapped children");
                     toggleRecording();
                 } else {
                     if (SettingsView.getSelectedContacts().isEmpty()) {
@@ -79,6 +90,11 @@ public class RecordingView {
         stopButton.setOnClickListener(clickListener);
     }
 
+    /**
+     * Getter for the Android layout component corresponding to this screen.
+     * Used to set up the tabbed view in PushToTalkDropDownReceiver
+     * @return the Android component as described above
+     */
     public View getRecordingView() {
         return recordingView;
     }
@@ -105,7 +121,7 @@ public class RecordingView {
         }
     }
 
-    public String getTranscription() {
+    private String getTranscription() {
         int waitCountMax = 100;
         int waitCount = 0;
         while (!scribe.isResultReady() && (waitCount < waitCountMax)) {
@@ -115,10 +131,12 @@ public class RecordingView {
         return scribe.getResult();
     }
 
-    public void processRecording() {
+    private void processRecording() {
         scribe.stopRecording();
         String result = getTranscription();
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);
+        // showConfirmationPrompt will also make a call to sendMessage, just only after the user
+        // confirms the transcription is correct and presses "Send Message"
         if (showConfirmationPrompt) {
             showConfirmationPrompt(result);
         } else {
@@ -126,10 +144,10 @@ public class RecordingView {
         }
     }
 
-    public void showConfirmationPrompt(final String transcription) {
-        final EditText input = (EditText) PluginLayoutInflater.inflate(context, R.layout.transcription_confirm_promt, null);;
+    private void showConfirmationPrompt(final String transcription) {
+        final EditText input =
+            (EditText) PluginLayoutInflater.inflate(context, R.layout.transcription_confirm_promt, null);
         input.setText(transcription);
-
         new AlertDialog.Builder(mapView.getContext())
             .setView(input)
             .setTitle("Edit Transcription Before Sending")
@@ -152,7 +170,7 @@ public class RecordingView {
             .show();
     }
 
-    public synchronized void sendMessage(String transcription) {
+    private synchronized void sendMessage(String transcription) {
         //Send to Notes
         notes.addText(transcription);
         //Send to contacts
