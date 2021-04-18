@@ -1,6 +1,8 @@
 package com.atakmap.android.pushToTalk;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.util.Log;
 import android.app.AlertDialog;
@@ -135,6 +137,14 @@ public class RecordingView {
         scribe.stopRecording();
         String result = getTranscription();
         boolean showConfirmationPrompt = SettingsView.getSettingEnabled(R.id.showPromptBeforeSending);
+        List<Map<String, String>> translations = new ArrayList<>();
+        if (SettingsView.getSettingEnabled(R.id.phoneticAlphabet)) {
+            translations.add(TextSubstitution.PHONETIC_MAPPING);
+        }
+        if (SettingsView.getSettingEnabled(R.id.convertNumbers)) {
+            translations.add(TextSubstitution.NUMBER_MAPPING);
+        }
+        result = TextSubstitution.convertWordsToShortcuts(result, translations);
         // showConfirmationPrompt will also make a call to sendMessage, just only after the user
         // confirms the transcription is correct and presses "Send Message"
         if (showConfirmationPrompt) {
