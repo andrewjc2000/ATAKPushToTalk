@@ -23,11 +23,14 @@ There is no binary release for this plugin. Because of this, in order to add it 
 
 ### Development Libraries
 Running the binary version of our plugin on an android device (virtual or otherwise) requires the ATAK system to be installed. Furthermore, you must have an ATAK build variant (MIL, CIV, etc.) that matches the plugin’s build variant. The binary we will be distributing will be the debug CIV version.
-Download Instructions: Please pull or download this repository.
-
+### Download Instructions
+Download this repository as a ZIP file [here](https://github.com/andrewjc2000/ATAKPushToTalk/archive/refs/heads/main.zip), or clone it using
+```
+git clone https://github.com/andrewjc2000/ATAKPushToTalk.git
+```
 ### Build Instructions
 The following steps can be used to build the ATAK Push-to-Talk to Text Plugin:
-1. Download this repository, or clone it using `git clone https://github.com/andrewjc2000/ATAKPushToTalk.git`
+1. Ensure you have downloaded or cloned the repository based on the Download Instructions.
 2. Somewhere on your machine, generate a keyfile with the following command (note the system will not build without this being configured). This command will prompt you to add a password to the file. Make sure to remember it.
 ```
 keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
@@ -46,9 +49,10 @@ takReleaseKeyFilePassword= [password you entered earlier]
 takReleaseKeyAlias= alias_name
 takReleaseKeyPassword= [password you entered earlier]
 ```
-5. Launch ATAK such that the gradle tasks ran from this project are able to add plugins to the environment ATAK is running in. Our development team used an emulator running ATAK launched by Android Studio to accomplish this.
-6. In the pushToTalk directory, run the gradle task `assembleCivDebug` (if you do not wish to build the debug-based civilian version, subsitute this with the appropriate command). This step will produce the binary for the plugin.
-7. ATAK will automatically prompt you on your device to continue installation. 
+### Installation Instructions
+1. Launch ATAK such that the gradle tasks ran from this project are able to add plugins to the environment ATAK is running in. Our development team used an emulator running ATAK launched by Android Studio to accomplish this.
+2. In the pushToTalk directory, run the gradle task `assembleCivDebug` (if you do not wish to build the debug-based civilian version, subsitute this with the appropriate command). This step will produce the binary for the plugin.
+3. ATAK will automatically prompt you on your device to continue installation. 
 ### Run Instructions
 Navigate to the plugin/app section of ATAK and select the PushToTalk icon. This will launch the plugin.
 ### Troubleshooting
