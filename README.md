@@ -13,7 +13,7 @@ A plugin that performs offline speech-to-text transcription for the Android Team
 - Currently, Speech-to-Text is working, but the accuracy is rather poor. According to the documentation, the accuracy of the transcription algorithm can be improved by tweaking the language model that the library uses to transcribe the audio. One possible approach to doing this is reducing the number of words for which the model is looking and instructing users to use purposefully simple language. This may be a necessary tradeoff due to the limited computation resources available.
 
 ## Install Guide
-There is no binary release for this plugin. Because of this, in order to add it to ATAK, you will need to build it within the context of a larger ATAK development environment.
+There is no binary release for this plugin. Because of this, in order to add it to ATAK, you will need to build this project from source within the context of a larger ATAK development environment.
 ### Prerequisites
 - JDK 8 or higher
 - Android 5.0 (API 21) or later.
