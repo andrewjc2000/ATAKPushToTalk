@@ -1,5 +1,13 @@
 # ATAK Push-To-Talk To Text
 A plugin that performs offline speech-to-text transcription for the Android Team Awareness Kit
+## Version 1.0.6 Release Notes
+### Bug Fixes
+- The plugin no longer crashes when the transcription is supplied as a null String, either due to no words being spoken or a transcription not being correctly produced for some other reason.
+
+### Known Bugs to be Fixed in Future Releases
+- Currently, Speech-to-Text is working, but the accuracy is rather poor. According to the documentation, the accuracy of the transcription algorithm can be improved by tweaking the language model that the library uses to transcribe the audio. One possible approach to doing this is reducing the number of words for which the model is looking and instructing users to use purposefully simple language. This may be a necessary tradeoff due to the limited computation resources available.
+- Settings configured in the Settings tab of our plugin are currently reset every time the plugin is loaded anew and are only saved in RAM. Ideally, these settings should be persisted between instances of loading ATAK, which would require them to be encoded and stored on the File system of the Android device.
+
 ## Version 1.0.5 Release Notes
 ### New Features
 - Numeric words in transcriptions are automatically converted to the single-character digits they represent, and words in the Phonetic alphabet in transcriptions are converted to the single-character letters they represent.
@@ -7,11 +15,6 @@ A plugin that performs offline speech-to-text transcription for the Android Team
 
 ### Bug Fixes
 - In previous versions, Speech-to-Text transcription did not work at all, despite the library being in place. This has been corrected in the current version, and so Speech-to-Text transcription produces a valid result in most cases.
-
-### Known Bugs to be Fixed in Future Releases
-- The plugin currently crashes upon audio without any distinct words being supplied to the transcription library. This is likely due to a logical error in handling empty Strings in the plugin source code.
-- Currently, Speech-to-Text is working, but the accuracy is rather poor. According to the documentation, the accuracy of the transcription algorithm can be improved by tweaking the language model that the library uses to transcribe the audio. One possible approach to doing this is reducing the number of words for which the model is looking and instructing users to use purposefully simple language. This may be a necessary tradeoff due to the limited computation resources available.
-- Settings configured in the Settings tab of our plugin are currently reset every time the plugin is loaded anew and are only saved in RAM. Ideally, these settings should be persisted between instances of loading ATAK, which would require them to be encoded and stored on the File system of the Android device.
 
 ## Install Guide
 There is no binary release for this plugin. Because of this, in order to add it to ATAK, you will need to build this project from source within the context of a larger ATAK development environment.
