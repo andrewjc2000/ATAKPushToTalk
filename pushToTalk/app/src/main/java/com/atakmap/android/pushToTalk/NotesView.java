@@ -1,6 +1,7 @@
 package com.atakmap.android.pushToTalk;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Locale;
 
@@ -35,8 +36,8 @@ public class NotesView {
     public NotesView(MapView mapView, Context context) {
         this.context = context;
         this.mapView = mapView;
-        notesView = PluginLayoutInflater.inflate(context, R.layout.notes_layout, null);
-        textPane = notesView.findViewById(R.id.plain_text_input);
+        this.notesView = PluginLayoutInflater.inflate(context, R.layout.notes_layout, null);
+        this.textPane = notesView.findViewById(R.id.plain_text_input);
     }
 
     public View getAndroidComponent() {
@@ -54,8 +55,8 @@ public class NotesView {
 
     private String buildEntry(String data) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd@HH:mm", Locale.getDefault());
-        String currentDateandTime = sdf.format(new Date());
-        String prefix = "\n\n[" + currentDateandTime + "] ";
+        String currentDateAndTime = sdf.format(new Date());
+        String prefix = "\n\n[" + currentDateAndTime + "] ";
         return prefix + data;
     }
 

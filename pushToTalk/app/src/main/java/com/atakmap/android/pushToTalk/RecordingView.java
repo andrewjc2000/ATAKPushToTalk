@@ -35,11 +35,11 @@ public class RecordingView {
      * or completed.
      */
     private static boolean processingRecording = false;
-    private View recordingView;
-    private MapView mapView;
-    private Context context;
-    private NotesView notes;
-    private SpeechTranscriber scribe;
+    private final View recordingView;
+    private final MapView mapView;
+    private final Context context;
+    private final NotesView notes;
+    private final SpeechTranscriber scribe;
 
     /**
      * Initializes the Recording View, which entails setting up the proper short/long press
@@ -68,12 +68,6 @@ public class RecordingView {
             @Override
             public void onClick(View v) {
                 if (recording || canStartRecording()) {
-                    // swaps the current button with the one immediately behind it. On the GUI,
-                    // the "Stop Recording" button is behind the "Start Recording" button or vice versa.
-                    RelativeLayout container = recordingView.findViewById(R.id.buttonContainer);
-                    View removedView = container.getChildAt(1);
-                    container.removeView(removedView);
-                    container.addView(removedView, 0);
                     toggleRecording();
                 } else {
                     if (SettingsView.getSelectedContacts().isEmpty()) {
@@ -102,11 +96,18 @@ public class RecordingView {
     }
 
     private boolean canStartRecording() {
-        return !recording && !SettingsView.getSelectedContacts().isEmpty() && scribe.getReady();
+        return !recording && !SettingsView.getSelectedContacts().isEmpty() && scribe.getIsReady();
     }
 
     private void toggleRecording() {
         if (!processingRecording) {
+            /* swaps the current button with the one immediately behind it. On the GUI,
+             * the "Stop Recording" button is behind the "Start Recording" button or vice versa.
+             */
+            RelativeLayout container = recordingView.findViewById(R.id.buttonContainer);
+            View removedView = container.getChildAt(1);
+            container.removeView(removedView);
+            container.addView(removedView, 0);
             if (recording) {
                 RecordingView.recording = false;
                 toast("Recording has stopped.");
@@ -123,12 +124,13 @@ public class RecordingView {
         }
     }
 
+    // default timeout, in milliseconds, for waiting for the transcription to be processed
+    private static final long TRANSCRIPTION_TIMEOUT_MILLIS = 2000;
+
     private String getTranscription() {
-        int waitCountMax = 100;
-        int waitCount = 0;
-        while (!scribe.isResultReady() && (waitCount < waitCountMax)) {
+        long startTime = System.currentTimeMillis();
+        while (!scribe.getResultReady() && Math.abs(System.currentTimeMillis() - startTime) < TRANSCRIPTION_TIMEOUT_MILLIS) {
             Log.i("RecordingView", "Waiting on Transcription to be ready!");
-            waitCount++;
         }
         return scribe.getResult();
     }

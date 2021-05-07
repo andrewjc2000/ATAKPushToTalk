@@ -79,10 +79,11 @@ public class PushToTalkDropDownReceiver extends DropDownReceiver implements OnSt
             tabHost.addTab(notesSpec);
             tabHost.addTab(settingsSpec);
         } catch (Throwable t) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PrintStream stream = new PrintStream(baos);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            PrintStream stream = new PrintStream(outputStream);
             t.printStackTrace(stream);
-            toast(baos.toString());
+            Log.e(TAG, outputStream.toString());
+            toast("There was an error initializing this plugin. See logs for more information");
         }
     }
 
@@ -100,17 +101,17 @@ public class PushToTalkDropDownReceiver extends DropDownReceiver implements OnSt
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
-        if (action == null) {
-            return;
-        }
-
-        if (action.equals(SHOW_PLUGIN)) {
-            Log.d(TAG, "showing plugin drop down");
+        if (action != null && action.equals(SHOW_PLUGIN)) {
             showDropDown(pushToTalkView, HALF_WIDTH, FULL_HEIGHT, FULL_WIDTH,
                 HALF_HEIGHT, false);
         }
     }
 
+    /**
+     * All of these methods with empty bodies are necessary because they are inherited from an
+     * interface, which means they must be overridden. However, we don't need any specific
+     * functionality on these events, so we leave these method bodies blank.
+     */
     @Override
     public void onDropDownSelectionRemoved() {
     }

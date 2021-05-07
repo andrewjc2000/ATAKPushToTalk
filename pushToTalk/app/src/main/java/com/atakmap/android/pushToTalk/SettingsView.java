@@ -23,6 +23,9 @@ import java.util.Map;
  * can choose to enable or disable a confirmation prompt being displayed before sending a
  * transcription, and more critically allows the user to select various contacts to which the
  * transcription is sent, a prerequisite for starting recording at all.
+ *
+ * Currently, settings are not persisted to the system - they reset every time the app is restarted
+ * or random-access memory is reset in some way.
  * @author achafos3
  * @version 1.0
  */
@@ -63,6 +66,10 @@ public class SettingsView {
     public SettingsView(MapView mapView, final Context context) {
         this.mapView = mapView;
         settingsView = PluginLayoutInflater.inflate(context, R.layout.settings_layout, null);
+        /* For every checkbox ID in the saved list, try to read in the value it maps to.
+         * If the value can't be found, set it to true by default. Then, create a new checkbox
+         * GUI element, which its state being checked dependent on the boolean value.
+         */
         for (int id: checkBoxIds) {
             CheckBox checkBox = settingsView.findViewById(id);
             checkBox.setChecked(booleanSettingsMap.get(id) == null ? true : booleanSettingsMap.get(id));
@@ -76,6 +83,10 @@ public class SettingsView {
                 }
             );
         }
+        /*
+         * For every contact found in the global contacts list, add a checkbox element such that
+         * the contact can be selected. Each checkbox is not selected, by default.
+         */
         List<Contact> contactList = Contacts.getInstance().getAllContacts();
         if (contactList.isEmpty()) {
             TextView defaultText = settingsView.findViewById(R.id.defaultGroupChatText);
